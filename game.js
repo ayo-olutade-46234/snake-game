@@ -3,11 +3,16 @@ const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
 const restartBtn = document.getElementById('restartBtn');
+const difficultySelect = document.getElementById('difficulty');
 
 // Game constants
 const GRID_SIZE = 20;
 const TILE_COUNT = canvas.width / GRID_SIZE;
-const GAME_SPEED = 100; // milliseconds
+const DIFFICULTY_SPEEDS = {
+    easy: 150,
+    medium: 100,
+    hard: 60
+};
 
 // Game state
 let snake = [{ x: 10, y: 10 }];
@@ -36,6 +41,12 @@ function init() {
     }
     
     draw();
+}
+
+// Get current game speed based on difficulty
+function getGameSpeed() {
+    const difficulty = difficultySelect.value;
+    return DIFFICULTY_SPEEDS[difficulty];
 }
 
 // Generate random food position
@@ -141,7 +152,7 @@ function gameOver() {
 document.addEventListener('keydown', (e) => {
     if (!gameStarted && (e.key.startsWith('Arrow'))) {
         gameStarted = true;
-        gameLoop = setInterval(update, GAME_SPEED);
+        gameLoop = setInterval(update, getGameSpeed());
     }
     
     switch (e.key) {
