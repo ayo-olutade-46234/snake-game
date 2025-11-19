@@ -1,0 +1,55 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Code Quality
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Check HTML files
+      run: |
+        echo "Checking HTML files..."
+        if [ -f "index.html" ]; then
+          echo "✓ index.html found"
+        else
+          echo "✗ index.html not found"
+          exit 1
+        fi
+    
+    - name: Check CSS files
+      run: |
+        echo "Checking CSS files..."
+        if [ -f "style.css" ]; then
+          echo "✓ style.css found"
+        else
+          echo "✗ style.css not found"
+          exit 1
+        fi
+    
+    - name: Check JavaScript files
+      run: |
+        echo "Checking JavaScript files..."
+        if [ -f "game.js" ]; then
+          echo "✓ game.js found"
+        else
+          echo "✗ game.js not found"
+          exit 1
+        fi
+    
+    - name: Validate file structure
+      run: |
+        echo "All required files are present!"
+        echo "Snake game is ready to deploy! 🐍"

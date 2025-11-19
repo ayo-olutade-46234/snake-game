@@ -1,0 +1,54 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    name: Validate PR
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Check PR title
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        echo "PR Title: $PR_TITLE"
+        
+        if [[ -z "$PR_TITLE" ]]; then
+          echo "❌ PR title is empty"
+          exit 1
+        fi
+        
+        echo "✓ PR title is valid"
+    
+    - name: Check for modified files
+      run: |
+        echo "Files changed in this PR:"
+        git diff --name-only origin/${{ github.base_ref }}...HEAD
+        
+        FILE_COUNT=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
+        echo "Total files changed: $FILE_COUNT"
+        
+        if [ "$FILE_COUNT" -eq 0 ]; then
+          echo "⚠️ No files changed"
+          exit 1
+        fi
+        
+        echo "✓ Files have been modified"
+    
+    - name: PR Summary
+      run: |
+        echo "## PR Validation Summary 📋" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ All checks passed!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**PR Details:**" >> $GITHUB_STEP_SUMMARY
+        echo "- Title: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Author: ${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Base: ${{ github.base_ref }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Head: ${{ github.head_ref }}" >> $GITHUB_STEP_SUMMARY
