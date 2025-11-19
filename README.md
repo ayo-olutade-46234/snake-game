@@ -19,6 +19,7 @@ A classic Snake game implementation using HTML5 Canvas and JavaScript.
    - ↓ Down Arrow - Move down
    - ← Left Arrow - Move left
    - → Right Arrow - Move right
+   - Space/Escape - Pause/Resume game
 4. Eat the red food to grow and increase your score
 5. Avoid hitting the walls or your own tail
 

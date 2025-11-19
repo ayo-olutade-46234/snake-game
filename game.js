@@ -18,6 +18,7 @@ let score = 0;
 let highScore = localStorage.getItem('snakeHighScore') || 0;
 let gameLoop;
 let gameStarted = false;
+let isPaused = false;
 
 highScoreElement.textContent = highScore;
 
@@ -84,6 +85,7 @@ function draw() {
 // Update game state
 function update() {
     if (dx === 0 && dy === 0) return;
+    if (isPaused) return;
     
     // Calculate new head position
     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
@@ -167,6 +169,22 @@ document.addEventListener('keydown', (e) => {
             if (dx === 0) {
                 dx = 1;
                 dy = 0;
+            }
+            break;
+        case ' ':
+        case 'Escape':
+            if (gameStarted) {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'white';
+                    ctx.font = '30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
+                } else {
+                    draw();
+                }
             }
             break;
     }
